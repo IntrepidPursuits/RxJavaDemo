@@ -1,4 +1,4 @@
-package intrepid.io.rxjavademo;
+package intrepid.io.rxjavademo.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import intrepid.io.rxjavademo.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.threading)
     public void onClick2() {
         startActivity(ThreadingActivity.class);
+    }
+
+    @OnClick(R.id.retrofit)
+    public void onClick3() {
+        startActivity(RetrofitActivity.class);
     }
 
     private void startActivity(Class cls) {

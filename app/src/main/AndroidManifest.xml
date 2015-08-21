@@ -3,14 +3,18 @@
           package="intrepid.io.rxjavademo"
     >
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
+        android:name=".DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             >
             <intent-filter>
@@ -20,13 +24,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HelloWorldActivity"
+            android:name=".activities.HelloWorldActivity"
             android:label="@string/title_activity_hello_world"
             >
         </activity>
         <activity
-            android:name=".ThreadingActivity"
+            android:name=".activities.ThreadingActivity"
             android:label="@string/title_activity_threading"
+            >
+        </activity>
+        <activity
+            android:name=".activities.RetrofitActivity"
+            android:label="@string/title_activity_retrofit"
             >
         </activity>
     </application>

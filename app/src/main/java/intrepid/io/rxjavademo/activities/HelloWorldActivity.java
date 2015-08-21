@@ -1,4 +1,4 @@
-package intrepid.io.rxjavademo;
+package intrepid.io.rxjavademo.activities;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import intrepid.io.rxjavademo.R;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;

@@ -11,16 +11,16 @@
     >
 
     <Button
-        android:id="@+id/hello_world"
+        android:id="@+id/retrofit_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World "
+        android:text="Retrofit regular "
         />
 
     <Button
-        android:id="@+id/rx_hello_world"
+        android:id="@+id/retrofit_rx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World Rx"
+        android:text="Retrofit Rx"
         />
 </LinearLayout>
