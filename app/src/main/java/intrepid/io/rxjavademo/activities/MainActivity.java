@@ -20,23 +20,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.hello_world)
-    public void onClick1() {
+    public void onHellowWorldClick() {
         startActivity(HelloWorldActivity.class);
     }
 
     @OnClick(R.id.threading)
-    public void onClick2() {
+    public void onThreadingClick() {
         startActivity(ThreadingActivity.class);
     }
 
     @OnClick(R.id.retrofit)
-    public void onClick3() {
+    public void onRetrofitClick() {
         startActivity(RetrofitActivity.class);
     }
 
     @OnClick(R.id.timer)
-    public void onClick4() {
+    public void onTimerClick() {
         startActivity(TimerActivity.class);
+    }
+
+    @OnClick(R.id.multiple_subscriptions)
+    public void onMultipleSubscriptionsClick() {
+        startActivity(MultipleSubscriptionActivity.class);
     }
 
     private void startActivity(Class cls) {

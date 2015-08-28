@@ -43,6 +43,11 @@
             android:label="@string/title_activity_timer"
             >
         </activity>
+        <activity
+            android:name=".activities.MultipleSubscriptionActivity"
+            android:label="@string/title_activity_multiple_subscription"
+            >
+        </activity>
     </application>
 
 </manifest>

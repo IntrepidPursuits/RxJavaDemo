@@ -18,11 +18,11 @@ import rx.functions.Action1;
 
 public class TimerActivity extends AppCompatActivity {
 
-    public static final int INITIAL_DELAY = 0;
-    public static final int PERIOD = 1;
+    private static final int INITIAL_DELAY = 0;
+    private static final int PERIOD = 1;
 
     // By default, the timer loops on a background thread via Schedulers.computation()
-    public Observable<Long> TIMER_OBSERVABLE = Observable.interval(INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
+    private final Observable<Long> TIMER_OBSERVABLE = Observable.interval(INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
 
     @Bind(R.id.counter_text)
     TextView counterText;
