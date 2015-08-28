@@ -65,11 +65,13 @@ public class RetrofitActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
+                // The throwable here is usually a RetrofitError
                 Timber.w(e, "Retrofit error");
             }
 
             @Override
             public void onNext(IpModel ipModel) {
+                // One of caveats of using RxJava over regular Retrofit is that the callback doesn't have the Response object
                 Timber.d("Retrofit success");
                 Toast.makeText(context, getIpMessage(ipModel), Toast.LENGTH_SHORT).show();
             }

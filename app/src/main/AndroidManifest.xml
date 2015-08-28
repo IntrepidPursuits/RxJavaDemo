@@ -38,6 +38,11 @@
             android:label="@string/title_activity_retrofit"
             >
         </activity>
+        <activity
+            android:name=".activities.TimerActivity"
+            android:label="@string/title_activity_timer"
+            >
+        </activity>
     </application>
 
 </manifest>

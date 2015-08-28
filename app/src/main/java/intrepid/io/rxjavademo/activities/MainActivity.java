@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(RetrofitActivity.class);
     }
 
+    @OnClick(R.id.timer)
+    public void onClick4() {
+        startActivity(TimerActivity.class);
+    }
+
     private void startActivity(Class cls) {
         startActivity(new Intent(this, cls));
     }

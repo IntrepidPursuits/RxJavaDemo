@@ -6,4 +6,5 @@
     <string name="title_activity_hello_world">Basic</string>
     <string name="title_activity_threading">Threading Example</string>
     <string name="title_activity_retrofit">RetrofitActivity</string>
+    <string name="title_activity_timer">TimerActivity</string>
 </resources>

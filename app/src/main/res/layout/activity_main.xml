@@ -36,5 +36,12 @@
             android:text="Retrofit"
             />
 
+        <Button
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Timer"
+            />
+
     </LinearLayout>
 </ScrollView>
