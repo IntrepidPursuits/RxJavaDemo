@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class MultipleSubscriptionActivity extends AppCompatActivity {
+public class MultipleSubscriptionsActivity extends AppCompatActivity {
 
     private final Observable<Long> TIMER_OBSERVABLE = Observable.create(new Observable.OnSubscribe<Long>() {
         @Override
@@ -49,7 +49,7 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_multiple_subscription);
+        setContentView(R.layout.activity_multiple_subscriptions);
         ButterKnife.bind(this);
     }
 
@@ -73,7 +73,7 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
 
     @OnClick(R.id.add_subscription_button)
     public void onAddSubscriptionClicked() {
-        View row = LayoutInflater.from(this).inflate(R.layout.row_multiple_subscription, container, false);
+        View row = LayoutInflater.from(this).inflate(R.layout.row_multiple_subscriptions, container, false);
         int index = container.getChildCount() - 1;
         container.addView(row, index);
 

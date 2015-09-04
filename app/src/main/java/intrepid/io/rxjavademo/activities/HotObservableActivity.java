@@ -95,7 +95,7 @@ public class HotObservableActivity extends AppCompatActivity {
 
     @OnClick(R.id.add_subscription_button)
     public void onAddSubscriptionClicked() {
-        View row = LayoutInflater.from(this).inflate(R.layout.row_multiple_subscription, container, false);
+        View row = LayoutInflater.from(this).inflate(R.layout.row_multiple_subscriptions, container, false);
         int index = container.getChildCount() - 1;
         container.addView(row, index);
 

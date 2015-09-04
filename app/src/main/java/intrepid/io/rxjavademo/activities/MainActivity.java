@@ -41,12 +41,17 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.multiple_subscriptions)
     public void onMultipleSubscriptionsClick() {
-        startActivity(MultipleSubscriptionActivity.class);
+        startActivity(MultipleSubscriptionsActivity.class);
     }
 
     @OnClick(R.id.hot_observable)
     public void onHotObservableClick() {
         startActivity(HotObservableActivity.class);
+    }
+
+    @OnClick(R.id.multiple_streams)
+    public void onMultipleStreamActivity() {
+        startActivity(MultipleStreamsActivity.class);
     }
 
     private void startActivity(Class cls) {

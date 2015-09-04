@@ -37,7 +37,7 @@
             android:label="@string/title_activity_timer" >
         </activity>
         <activity
-            android:name=".activities.MultipleSubscriptionActivity"
+            android:name=".activities.MultipleSubscriptionsActivity"
             android:label="@string/title_activity_multiple_subscription" >
         </activity>
         <activity
@@ -45,7 +45,7 @@
             android:label="@string/title_activity_hot_cold" >
         </activity>
         <activity
-            android:name=".activities.MultipleStreamActivity"
+            android:name=".activities.MultipleStreamsActivity"
             android:label="@string/title_activity_multiple_stream" >
         </activity>
     </application>

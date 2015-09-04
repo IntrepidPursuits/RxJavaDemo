@@ -1,0 +1,123 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    >
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                style="@style/CellStyle"
+                android:text="Sequential"
+                />
+
+            <TextView
+                style="@style/CellStyle"
+
+                android:text="Parallel"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First number"
+                />
+
+            <TextView
+                android:id="@+id/first_sequential"
+                style="@style/CellStyle"
+                />
+
+            <TextView
+                android:id="@+id/first_parallel"
+                style="@style/CellStyle"
+                />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Second number"
+                />
+
+            <TextView
+                android:id="@+id/second_sequential"
+                style="@style/CellStyle"
+
+                />
+
+            <TextView
+                android:id="@+id/second_parallel"
+                style="@style/CellStyle"
+
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dip"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sum"
+                />
+
+            <TextView
+                android:id="@+id/sum_sequential"
+                style="@style/CellStyle"
+                />
+
+            <TextView
+                android:id="@+id/sum_parallel"
+                style="@style/CellStyle"
+                />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Start"
+        />
+</LinearLayout>
+
