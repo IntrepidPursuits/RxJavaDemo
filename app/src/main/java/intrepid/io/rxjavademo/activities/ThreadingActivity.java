@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -28,8 +26,8 @@ public class ThreadingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.rx_hello_world)
-    public void onClick1() {
+    @OnClick(R.id.no_threading)
+    public void onNoThreadingClick() {
         // the subscription and observation takes place on the current thread (i.e. main thread). Resulting in
         // UI freezing for few seconds
         Observable.create(new Observable.OnSubscribe<String>() {
@@ -48,7 +46,7 @@ public class ThreadingActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.subscribe_only)
-    public void onClick2() {
+    public void onSubscribeOnlyClick() {
         // the subscription takes place in background thread. Since we didin't specify the observation thread, it will
         // take place in same thread as the subscription. This will result in crash since Toast must be called in
         // the main thread
@@ -69,7 +67,7 @@ public class ThreadingActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.subscribe_and_observe)
-    public void onClick3() {
+    public void onSubscribeAndObserveClick() {
         // here we specify the subscription to take place in background thread and the observation to take place in the
         // main thread.
         Observable.create(new Observable.OnSubscribe<String>() {
@@ -109,27 +107,5 @@ public class ThreadingActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_hello_world, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
