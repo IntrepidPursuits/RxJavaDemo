@@ -14,7 +14,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 
-public class HelloWorldActivity extends AppCompatActivity {
+public class HelloRxActivity extends AppCompatActivity {
 
     private Context context = this;
 

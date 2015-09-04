@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="intrepid.io.rxjavademo"
-    >
+    package="intrepid.io.rxjavademo" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name"
-            >
+            android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.HelloWorldActivity"
-            android:label="@string/title_activity_hello_world"
-            >
+            android:name=".activities.HelloRxActivity"
+            android:label="@string/title_activity_hello_world" >
         </activity>
         <activity
             android:name=".activities.ThreadingActivity"
-            android:label="@string/title_activity_threading"
-            >
+            android:label="@string/title_activity_threading" >
         </activity>
         <activity
             android:name=".activities.RetrofitActivity"
-            android:label="@string/title_activity_retrofit"
-            >
+            android:label="@string/title_activity_retrofit" >
         </activity>
         <activity
             android:name=".activities.TimerActivity"
-            android:label="@string/title_activity_timer"
-            >
+            android:label="@string/title_activity_timer" >
         </activity>
         <activity
             android:name=".activities.MultipleSubscriptionActivity"
-            android:label="@string/title_activity_multiple_subscription"
-            >
+            android:label="@string/title_activity_multiple_subscription" >
+        </activity>
+        <activity
+            android:name=".activities.HotObservableActivity"
+            android:label="@string/title_activity_hot_cold" >
+        </activity>
+        <activity
+            android:name=".activities.MultipleStreamActivity"
+            android:label="@string/title_activity_multiple_stream" >
         </activity>
     </application>
 

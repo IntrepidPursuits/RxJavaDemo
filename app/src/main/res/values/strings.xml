@@ -8,4 +8,6 @@
     <string name="title_activity_retrofit">RetrofitActivity</string>
     <string name="title_activity_timer">TimerActivity</string>
     <string name="title_activity_multiple_subscription">MultipleSubscriptionActivity</string>
+    <string name="title_activity_hot_cold">HotColdActivity</string>
+    <string name="title_activity_multiple_stream">MultipleStreamActivity</string>
 </resources>

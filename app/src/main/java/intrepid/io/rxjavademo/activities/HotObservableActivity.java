@@ -3,7 +3,6 @@ package intrepid.io.rxjavademo.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,13 +16,24 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class MultipleSubscriptionActivity extends AppCompatActivity {
+public class HotObservableActivity extends AppCompatActivity {
 
-    private final Observable<Long> TIMER_OBSERVABLE = Observable.create(new Observable.OnSubscribe<Long>() {
+    /*
+    By default, observables are "Cold", which means the the code inside the Observable block only get executed when
+    something subscribe to it. Every subscription will cause that code to get triggered again, so each subscriber will
+    actually subscribe to different stream of items/events (See MultipleSubscriptionActivity). On the other hand, A
+    "Hot" observable can execute its code without subscribers, and each of its subscriber will see the same stream of content
+    There are multiple ways to make an onbservable "Hot", one of which is to call publish() after creating the observable
+
+    This activity is very similar to MultipleSubscriptionActivity, except that we made the observable Hot by calling publish()
+      */
+
+    private final ConnectableObservable<Long> TIMER_OBSERVABLE = Observable.create(new Observable.OnSubscribe<Long>() {
         @Override
         public void call(Subscriber<? super Long> subscriber) {
             long count = 0;
@@ -38,7 +48,10 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
                 count++;
             }
         }
-    }).subscribeOn(Schedulers.newThread());
+    }).subscribeOn(Schedulers.newThread())
+            // Calling publish will turn the observable into a hot "ConnectableObservable". ConnectableObservable will
+            // only start emitting when connect() gets called.
+            .publish();
 
     @Bind(R.id.container)
     LinearLayout container;
@@ -49,7 +62,7 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_multiple_subscription);
+        setContentView(R.layout.activity_hot_observable);
         ButterKnife.bind(this);
     }
 
@@ -71,6 +84,15 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
         compositeSubscription.unsubscribe();
     }
 
+    @OnClick(R.id.start_emitting_button)
+    public void onStartEmittingClick() {
+        Subscription connection = TIMER_OBSERVABLE.connect();
+
+        // IMPORTANT: don't forgot to disconnect the ConnectableObservable when you are done
+        // here we use compositeSubscription to disconnect when activity stops
+        compositeSubscription.add(connection);
+    }
+
     @OnClick(R.id.add_subscription_button)
     public void onAddSubscriptionClicked() {
         View row = LayoutInflater.from(this).inflate(R.layout.row_multiple_subscription, container, false);
@@ -78,12 +100,11 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
         container.addView(row, index);
 
         TextView rowNumberText = (TextView) row.findViewById(R.id.row_number);
-        rowNumberText.setText("Subscription " + (index + 1) + ": ");
+        rowNumberText.setText("Subscription " + (index) + ": ");
 
         final TextView rowValueText = (TextView) row.findViewById(R.id.row_value);
-        // The code inside TIMER_OBSERVABLE's call gets executed every time something subscribes to it. So each
-        // subscriber will have it's own timer.
-        // This is the default behavior obervables, also known as "Cold observables"
+        // Since the observable is hot, each subscriber will subscribe to the same timer. So they will display the same
+        // count
         Subscription subscription = TIMER_OBSERVABLE
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
@@ -91,27 +112,7 @@ public class MultipleSubscriptionActivity extends AppCompatActivity {
                     public void call(Long count) {
                         rowValueText.setText("" + count);
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Timber.w(throwable, "error");
-                    }
                 });
         compositeSubscription.add(subscription);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

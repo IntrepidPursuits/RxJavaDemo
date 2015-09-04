@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.hello_world)
     public void onHellowWorldClick() {
-        startActivity(HelloWorldActivity.class);
+        startActivity(HelloRxActivity.class);
     }
 
     @OnClick(R.id.threading)
@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.multiple_subscriptions)
     public void onMultipleSubscriptionsClick() {
         startActivity(MultipleSubscriptionActivity.class);
+    }
+
+    @OnClick(R.id.hot_observable)
+    public void onHotObservableClick() {
+        startActivity(HotObservableActivity.class);
     }
 
     private void startActivity(Class cls) {

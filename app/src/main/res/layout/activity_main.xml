@@ -50,5 +50,12 @@
             android:text="Multiple Subscriptions"
             />
 
+        <Button
+            android:id="@+id/hot_observable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hot observable"
+            />
+
     </LinearLayout>
 </ScrollView>
