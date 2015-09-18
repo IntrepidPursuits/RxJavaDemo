@@ -48,8 +48,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.multiple_streams)
-    public void onMultipleStreamActivity() {
+    public void onMultipleStreamClick() {
         startActivity(MultipleStreamsActivity.class);
+    }
+
+    @OnClick(R.id.event_bus)
+    public void onEventBusClick() {
+        startActivity(EventBusActivity.class);
     }
 
     private void startActivity(Class cls) {

@@ -47,7 +47,7 @@
             android:id="@+id/multiple_subscriptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Multiple Subscriptions"
+            android:text="Multiple subscriptions"
             />
 
         <Button
@@ -61,7 +61,14 @@
             android:id="@+id/multiple_streams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Multiple Streams"
+            android:text="Multiple streams"
+            />
+
+        <Button
+            android:id="@+id/event_bus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event bus"
             />
 
     </LinearLayout>
