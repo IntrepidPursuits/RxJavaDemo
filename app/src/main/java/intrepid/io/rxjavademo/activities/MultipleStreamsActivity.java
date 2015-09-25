@@ -63,6 +63,7 @@ public class MultipleStreamsActivity extends AppCompatActivity {
                         // The threading/scheduler here is specified by observable1.observeOn()
                         firstSequential.setText(integer + "");
                         firstSequentialInt = integer;
+                        // the threading of the code inside the observable is specified by flatMap().subscribeOn()
                         return generateIntegerObservable();
                     }
                 })

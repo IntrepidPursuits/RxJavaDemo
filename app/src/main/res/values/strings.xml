@@ -11,4 +11,5 @@
     <string name="title_activity_hot_cold">HotColdActivity</string>
     <string name="title_activity_multiple_stream">MultipleStreamActivity</string>
     <string name="title_activity_event_bus">EventBusActivity</string>
+    <string name="title_activity_view_binding">ViewBindingActivity</string>
 </resources>

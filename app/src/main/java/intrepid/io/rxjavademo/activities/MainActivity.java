@@ -57,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(EventBusActivity.class);
     }
 
+    @OnClick(R.id.view_binding)
+    public void onViewBindingClick() {
+        startActivity(ViewBindingActivity.class);
+    }
+
     private void startActivity(Class cls) {
         startActivity(new Intent(this, cls));
     }

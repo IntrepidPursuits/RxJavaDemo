@@ -54,7 +54,8 @@ public class RetrofitActivity extends AppCompatActivity {
             }
         };
 
-        // use this subscriber if you want to handle errors and have a onComplete callback after success or failure
+        // use this subscriber if you want to handle errors and have a onComplete callback after all items are emitted
+        // (onComplete is basically onNext in this case since there's only one item)
         Subscriber<IpModel> subscriber2 = new Subscriber<IpModel>() {
             @Override
             public void onCompleted() {

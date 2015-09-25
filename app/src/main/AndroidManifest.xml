@@ -50,8 +50,11 @@
         </activity>
         <activity
             android:name=".activities.EventBusActivity"
-            android:label="@string/title_activity_event_bus"
-            >
+            android:label="@string/title_activity_event_bus" >
+        </activity>
+        <activity
+            android:name=".activities.ViewBindingActivity"
+            android:label="@string/title_activity_view_binding" >
         </activity>
     </application>
 
