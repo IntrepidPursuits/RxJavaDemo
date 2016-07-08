@@ -10,10 +10,9 @@ import butterknife.OnClick;
 import intrepid.io.rxjavademo.ApiManager;
 import intrepid.io.rxjavademo.R;
 import intrepid.io.rxjavademo.models.IpModel;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import rx.Subscriber;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -31,14 +30,14 @@ public class RetrofitActivity extends AppCompatActivity {
 
     @OnClick(R.id.retrofit_regular)
     public void onRegularClick() {
-        ApiManager.getIpService().getMyIp(new Callback<IpModel>() {
+        ApiManager.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
             @Override
-            public void success(IpModel ipModel, Response response) {
-                Toast.makeText(context, formatIpMessage(ipModel), Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<IpModel> call, Response<IpModel> response) {
+                Toast.makeText(context, formatIpMessage(response.body()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<IpModel> call, Throwable t) {
 
             }
         });
@@ -46,40 +45,24 @@ public class RetrofitActivity extends AppCompatActivity {
 
     @OnClick(R.id.retrofit_rx)
     public void onRxClick() {
-        // use this callback if you just want to handle the success condition
-        Action1<IpModel> subscriber1 = new Action1<IpModel>() {
-            @Override
-            public void call(IpModel ipModel) {
-                Toast.makeText(context, formatIpMessage(ipModel), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        // use this subscriber if you want to handle errors and have a onComplete callback after all items are emitted
-        // (onComplete is basically onNext in this case since there's only one item)
-        Subscriber<IpModel> subscriber2 = new Subscriber<IpModel>() {
-            @Override
-            public void onCompleted() {
-                Timber.d("Retrofit completed");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // The throwable here is usually a RetrofitError
-                Timber.w(e, "Retrofit error");
-            }
-
-            @Override
-            public void onNext(IpModel ipModel) {
-                // One of caveats of using RxJava over regular Retrofit is that the callback doesn't have the Response object
-                Timber.d("Retrofit success");
-                Toast.makeText(context, formatIpMessage(ipModel), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        // By default Retrofit subscribes and observes on a background thread, so we need to explictly tell it to
-        // observe on main thread if we are doing any UI work.
-        ApiManager.getIpService().getMyIpRx().observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber2);
+        ApiManager.getIpService().getMyIpRx()
+                // By default Retrofit subscribes and observes on a background thread, so we need to explictly tell it to
+                // observe on main thread if we are doing any UI work.
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Response<IpModel>>() {
+                               @Override
+                               public void call(Response<IpModel> ipModelResponse) {
+                                   Timber.d("Retrofit success");
+                                   Toast.makeText(context, formatIpMessage(ipModelResponse.body()), Toast.LENGTH_SHORT).show();
+                               }
+                           },
+                           new Action1<Throwable>() {
+                               @Override
+                               public void call(Throwable throwable) {
+                                   Timber.w(throwable, "Retrofit error");
+                               }
+                           }
+                );
     }
 
     private String formatIpMessage(IpModel ipModel) {

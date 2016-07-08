@@ -14,9 +14,9 @@ import intrepid.io.rxjavademo.RxBus;
 import intrepid.io.rxjavademo.events.IpUpdatedEvent;
 import intrepid.io.rxjavademo.events.NumberGeneratedEvent;
 import intrepid.io.rxjavademo.models.IpModel;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventBusActivity extends AppCompatActivity implements RxBus.RxEventListener {
 
@@ -51,14 +51,14 @@ public class EventBusActivity extends AppCompatActivity implements RxBus.RxEvent
 
     @OnClick(R.id.get_ip)
     public void onGetIpClick() {
-        ApiManager.getIpService().getMyIp(new Callback<IpModel>() {
+        ApiManager.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
             @Override
-            public void success(IpModel ipModel, Response response) {
-                bus.post(new IpUpdatedEvent(ipModel));
+            public void onResponse(Call<IpModel> call, Response<IpModel> response) {
+                bus.post(new IpUpdatedEvent(response.body()));
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<IpModel> call, Throwable t) {
 
             }
         });

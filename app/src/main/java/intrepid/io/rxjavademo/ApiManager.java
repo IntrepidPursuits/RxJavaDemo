@@ -2,11 +2,15 @@ package intrepid.io.rxjavademo;
 
 import intrepid.io.rxjavademo.models.IpModel;
 import intrepid.io.rxjavademo.models.WeatherModel;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class ApiManager {
     private static IpService ipService;
@@ -14,28 +18,34 @@ public class ApiManager {
 
     public static IpService getIpService() {
         if (ipService == null) {
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint("https://api.ipify.org")
+            RxJavaCallAdapterFactory rxAdapterFactory = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.ipify.org")
+                    .addCallAdapterFactory(rxAdapterFactory)
+                    .addConverterFactory(JacksonConverterFactory.create())
                     .build();
-            ipService = restAdapter.create(IpService.class);
+            ipService = retrofit.create(IpService.class);
         }
         return ipService;
     }
 
     public interface IpService {
         @GET("/?format=json")
-        void getMyIp(Callback<IpModel> callback);
+        Call<IpModel> getMyIp();
 
         @GET("/?format=json")
-        Observable<IpModel> getMyIpRx();
+        Observable<Response<IpModel>> getMyIpRx(); // Use this version if you want additional info such as status code and headers
+        //Observable<IpModel> getMyIpRx(); // Use this version if you only care about the resulting data model
+
     }
 
     public static WeatherService getWeatherService() {
         if (weatherService == null) {
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint("http://api.openweathermap.org/data/2.5")
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.openweathermap.org/data/2.5")
+                    .addConverterFactory(JacksonConverterFactory.create())
                     .build();
-            ipService = restAdapter.create(IpService.class);
+            ipService = retrofit.create(IpService.class);
         }
         return weatherService;
     }
