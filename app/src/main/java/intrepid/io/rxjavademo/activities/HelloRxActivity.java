@@ -9,7 +9,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import intrepid.io.rxjavademo.R;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 
 public class HelloRxActivity extends AppCompatActivity {
@@ -31,13 +30,8 @@ public class HelloRxActivity extends AppCompatActivity {
 
     @OnClick(R.id.rx_hello_world)
     public void onRxClick() {
-        // this does the same thing as onNormalClick()
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                subscriber.onNext("Hello world Rx");
-            }
-        }).subscribe(new Action1<String>() {
+        // this does the same exact thing as onNormalClick()
+        Observable.just("Hello world Rx").subscribe(new Action1<String>() {
             @Override
             public void call(String s) {
                 Toast.makeText(context, s, Toast.LENGTH_SHORT).show();

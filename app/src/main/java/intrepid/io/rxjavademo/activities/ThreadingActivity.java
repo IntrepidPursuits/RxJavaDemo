@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import java.util.concurrent.Callable;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import intrepid.io.rxjavademo.R;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -30,18 +31,20 @@ public class ThreadingActivity extends AppCompatActivity {
     public void onNoThreadingClick() {
         // the subscription and observation takes place on the current thread (i.e. main thread). Resulting in
         // UI freezing for few seconds
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                operationThatTakesFewSeconds();
-                subscriber.onNext("Hello world");
-            }
-        }).subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-            }
-        });
+        Observable
+                .fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        operationThatTakesFewSeconds();
+                        return "Hello world";
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -50,19 +53,22 @@ public class ThreadingActivity extends AppCompatActivity {
         // the subscription takes place in background thread. Since we didin't specify the observation thread, it will
         // take place in same thread as the subscription. This will result in crash since Toast must be called in
         // the main thread
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                operationThatTakesFewSeconds();
-                subscriber.onNext("Hello world");
-            }
-        }).subscribeOn(Schedulers.io()).subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                // crash incoming
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-            }
-        });
+        Observable
+                .fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        operationThatTakesFewSeconds();
+                        return "Hello world";
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        // crash incoming
+                        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -70,13 +76,16 @@ public class ThreadingActivity extends AppCompatActivity {
     public void onSubscribeAndObserveClick() {
         // here we specify the subscription to take place in background thread and the observation to take place in the
         // main thread.
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                operationThatTakesFewSeconds();
-                subscriber.onNext("Hello world");
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        Observable
+                .fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        operationThatTakesFewSeconds();
+                        return "Hello world";
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
@@ -103,9 +112,8 @@ public class ThreadingActivity extends AppCompatActivity {
 
     private void operationThatTakesFewSeconds() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

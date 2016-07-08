@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import java.util.Random;
+import java.util.concurrent.Callable;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import intrepid.io.rxjavademo.R;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -19,8 +18,11 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class MultipleStreamsActivity extends AppCompatActivity {
+    private static final int FIRST_NUM = 6000;
+    private static final int SECOND_NUM = 3000;
 
-    final Random RANDOM = new Random(System.currentTimeMillis());
+    private static final long FIRST_DELAY = 6000;
+    private static final long SECOND_DELAY = 3000;
 
     @Bind(R.id.first_sequential)
     TextView firstSequential;
@@ -52,27 +54,27 @@ public class MultipleStreamsActivity extends AppCompatActivity {
     }
 
     private void startSequentialRequest() {
-        Observable<Integer> observable1 = generateIntegerObservable()
+        getFirstNum()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
-        observable1.flatMap(
-                new Func1<Integer, Observable<Integer>>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<Integer>() {
                     @Override
-                    public Observable<Integer> call(Integer integer) {
-                        // The threading/scheduler here is specified by observable1.observeOn()
+                    public void call(Integer integer) {
                         firstSequential.setText(integer + "");
                         firstSequentialInt = integer;
-                        // the threading of the code inside the observable is specified by flatMap().subscribeOn()
-                        return generateIntegerObservable();
                     }
                 })
-                // you can specify different schedulers for the returned observable from flatMap()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<Integer, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(Integer integer) {
+                        return getSecondNum();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        // the threading here is specified by flatMap().observerOn()
                         secondSequential.setText(integer + "");
                         int sum = integer + firstSequentialInt;
                         sumSequential.setText(sum + "");
@@ -81,48 +83,45 @@ public class MultipleStreamsActivity extends AppCompatActivity {
     }
 
     private void startParallelRequest() {
-        // observeOn() and cache() are only necessary if you want to add subscriber to each observable in addition to the
-        // combined observable stream
-        // cache saves the item so that the subscribe here and the combineLatest subscriber sees the same item and
-        // don't cause the observable to execute twice.
-        Observable<Integer> observable1 = generateIntegerObservable()
+        Observable<Integer> observable1 = getFirstNum()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .cache();
-        Observable<Integer> observable2 = generateIntegerObservable()
+                .doOnNext(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        firstParallel.setText(integer + "");
+                    }
+                })
+                .observeOn(Schedulers.io());
+
+        Observable<Integer> observable2 = getSecondNum()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .cache();
-        observable1.subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                firstParallel.setText(integer + "");
-            }
-        });
-        observable2.subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                secondParallel.setText(integer + "");
-            }
-        });
+                .doOnNext(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        secondParallel.setText(integer + "");
+                    }
+                })
+                .observeOn(Schedulers.io());
 
         // Can also use Observable.zip() here. These two have the same behavior when each observable only emits one item.
         // Refer to the Rx documentation for their behaviors when observables emit more than one item
-        Observable.combineLatest(
-                observable1,
-                observable2,
-                new Func2<Integer, Integer, Integer>() {
+        Observable.combineLatest(observable1,
+                                 observable2,
+                                 new Func2<Integer, Integer, Integer>() {
+                                     @Override
+                                     public Integer call(Integer integer, Integer integer2) {
+                                         return integer + integer2;
+                                     }
+                                 })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
                     @Override
-                    public Integer call(Integer integer, Integer integer2) {
-                        return integer + integer2;
+                    public void call(Integer integer) {
+                        sumParallel.setText(integer + "");
                     }
-                }
-        ).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                sumParallel.setText(integer + "");
-            }
-        });
+                });
     }
 
     private void resetText() {
@@ -134,27 +133,31 @@ public class MultipleStreamsActivity extends AppCompatActivity {
         sumSequential.setText("");
     }
 
-    private Observable<Integer> generateIntegerObservable() {
-        return Observable.create(new Observable.OnSubscribe<Integer>() {
+    private Observable<Integer> getFirstNum() {
+        return Observable.fromCallable(new Callable<Integer>() {
             @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                randomDelay();
-                subscriber.onNext(randomNumber());
+            public Integer call() throws Exception {
+                delay(FIRST_DELAY);
+                return FIRST_NUM;
             }
         });
     }
 
-    // Simulate a operation that takes between 1 and 5 seconds
-    private void randomDelay() {
+    private Observable<Integer> getSecondNum() {
+        return Observable.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                delay(SECOND_DELAY);
+                return SECOND_NUM;
+            }
+        });
+    }
+
+    private void delay(long delay) {
         try {
-            long sleepTime = (long) (1000 + RANDOM.nextFloat() * 4000);
-            Thread.sleep(sleepTime);
+            Thread.sleep(delay);
         } catch (InterruptedException e) {
 
         }
-    }
-
-    private int randomNumber() {
-        return RANDOM.nextInt(100);
     }
 }

@@ -7,8 +7,8 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import intrepid.io.rxjavademo.ApiManager;
 import intrepid.io.rxjavademo.R;
+import intrepid.io.rxjavademo.RestClient;
 import intrepid.io.rxjavademo.models.IpModel;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 public class RetrofitActivity extends AppCompatActivity {
 
-    private Context context = this;
+    private final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class RetrofitActivity extends AppCompatActivity {
 
     @OnClick(R.id.retrofit_regular)
     public void onRegularClick() {
-        ApiManager.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
+        RestClient.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
             @Override
             public void onResponse(Call<IpModel> call, Response<IpModel> response) {
                 Toast.makeText(context, formatIpMessage(response.body()), Toast.LENGTH_SHORT).show();
@@ -45,9 +45,9 @@ public class RetrofitActivity extends AppCompatActivity {
 
     @OnClick(R.id.retrofit_rx)
     public void onRxClick() {
-        ApiManager.getIpService().getMyIpRx()
-                // By default Retrofit subscribes and observes on a background thread, so we need to explictly tell it to
-                // observe on main thread if we are doing any UI work.
+        RestClient.getIpService().getMyIpRx()
+                // By default Retrofit subscribes and observes on a background thread, so we need to explicitly
+                // tell it to observe on main thread if we are doing any UI work.
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Response<IpModel>>() {
                                @Override

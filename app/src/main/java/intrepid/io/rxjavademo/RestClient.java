@@ -12,13 +12,13 @@ import retrofit2.http.Query;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class ApiManager {
+public class RestClient {
     private static IpService ipService;
     private static WeatherService weatherService;
 
     public static IpService getIpService() {
         if (ipService == null) {
-            RxJavaCallAdapterFactory rxAdapterFactory = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
+            RxJavaCallAdapterFactory rxAdapterFactory = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()); //specifies the default subscribeOn() scheduler
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://api.ipify.org")
                     .addCallAdapterFactory(rxAdapterFactory)

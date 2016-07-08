@@ -23,15 +23,14 @@ import timber.log.Timber;
 
 public class HotObservableActivity extends AppCompatActivity {
 
-    /*
-    By default, observables are "Cold", which means the the code inside the Observable block only get executed when
-    something subscribe to it. Every subscription will cause that code to get triggered again, so each subscriber will
-    actually subscribe to different stream of items/events (See MultipleSubscriptionActivity). On the other hand, A
-    "Hot" observable can execute its code without subscribers, and each of its subscriber will see the same stream of content
-    There are multiple ways to make an onbservable "Hot", one of which is to call publish() after creating the observable
-
-    This activity is very similar to MultipleSubscriptionActivity, except that we made the observable Hot by calling publish()
-      */
+    /**
+     * By default, observables are "Cold", which means the the code inside the Observable block only get executed when
+     * something subscribe to it. Every subscription will cause that code to get triggered again, so each subscriber will
+     * actually subscribe to different stream of items/events (See MultipleSubscriptionActivity). On the other hand, A
+     * "Hot" observable can execute its code without subscribers, and each of its subscriber will see the same stream of content
+     * There are multiple ways to make an observable "Hot", one of which is to call publish() after creating the observable
+     * This activity is very similar to MultipleSubscriptionActivity, except that we made the observable Hot by calling publish()
+     */
 
     private final ConnectableObservable<Long> TIMER_OBSERVABLE = Observable.create(new Observable.OnSubscribe<Long>() {
         @Override
@@ -48,7 +47,7 @@ public class HotObservableActivity extends AppCompatActivity {
                 count++;
             }
         }
-    }).subscribeOn(Schedulers.newThread())
+    }).subscribeOn(Schedulers.io())
             // Calling publish will turn the observable into a hot "ConnectableObservable". ConnectableObservable will
             // only start emitting when connect() gets called.
             .publish();
@@ -57,7 +56,7 @@ public class HotObservableActivity extends AppCompatActivity {
     LinearLayout container;
 
     // composite subscription holds a list of child subscriptions so that we can unsubscribe them all at once
-    private CompositeSubscription compositeSubscription;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,30 +66,19 @@ public class HotObservableActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        compositeSubscription = new CompositeSubscription();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
-        // IMPORTANT: once a composite subscription has unsubscribed, any child subscriptions added afterwards will
-        // also start out as unsubscribed, which means they will not be executed. So we need to create a new
-        // compositeSubscription after the old one unsubscribes
-        // (ex. here we would create a new composite subscription during onStart, and unsubscribe it during onStop)
-        compositeSubscription.unsubscribe();
+        compositeSubscription.clear();
     }
 
     @OnClick(R.id.start_emitting_button)
     public void onStartEmittingClick() {
-        Subscription connection = TIMER_OBSERVABLE.connect();
+        Subscription connectionSubscription = TIMER_OBSERVABLE.connect();
 
         // IMPORTANT: don't forgot to disconnect the ConnectableObservable when you are done
         // here we use compositeSubscription to disconnect when activity stops
-        compositeSubscription.add(connection);
+        compositeSubscription.add(connectionSubscription);
     }
 
     @OnClick(R.id.add_subscription_button)

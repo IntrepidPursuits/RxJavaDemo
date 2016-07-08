@@ -8,8 +8,8 @@ import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import intrepid.io.rxjavademo.ApiManager;
 import intrepid.io.rxjavademo.R;
+import intrepid.io.rxjavademo.RestClient;
 import intrepid.io.rxjavademo.RxBus;
 import intrepid.io.rxjavademo.events.IpUpdatedEvent;
 import intrepid.io.rxjavademo.events.NumberGeneratedEvent;
@@ -51,7 +51,7 @@ public class EventBusActivity extends AppCompatActivity implements RxBus.RxEvent
 
     @OnClick(R.id.get_ip)
     public void onGetIpClick() {
-        ApiManager.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
+        RestClient.getIpService().getMyIp().enqueue(new Callback<IpModel>() {
             @Override
             public void onResponse(Call<IpModel> call, Response<IpModel> response) {
                 bus.post(new IpUpdatedEvent(response.body()));
@@ -68,6 +68,7 @@ public class EventBusActivity extends AppCompatActivity implements RxBus.RxEvent
     public void onEvent(Object event) {
         // boilerplate code to demux the event to specific handlers
         // this is the reason why Otto and EventBus are more useful if we need a pub/sub system
+        // You can also look into libraries like https://github.com/AndroidKnife/RxBus
         if (event instanceof NumberGeneratedEvent) {
             onNumberGenerate((NumberGeneratedEvent) event);
         } else if (event instanceof IpUpdatedEvent) {

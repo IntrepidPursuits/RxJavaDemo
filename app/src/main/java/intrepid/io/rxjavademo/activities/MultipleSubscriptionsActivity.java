@@ -37,13 +37,13 @@ public class MultipleSubscriptionsActivity extends AppCompatActivity {
                 count++;
             }
         }
-    }).subscribeOn(Schedulers.newThread());
+    }).subscribeOn(Schedulers.io());
 
     @Bind(R.id.container)
     LinearLayout container;
 
     // composite subscription holds a list of child subscriptions so that we can unsubscribe them all at once
-    private CompositeSubscription compositeSubscription;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,21 +53,15 @@ public class MultipleSubscriptionsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        compositeSubscription = new CompositeSubscription();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
-        // IMPORTANT: once a composite subscription has unsubscribed, any child subscriptions added afterwards will
-        // also start out as unsubscribed, which means they will not be executed. So we need to create a new
-        // compositeSubscription after the old one unsubscribes
-        // (ex. here we would create a new composite subscription during onStart, and unsubscribe it during onStop)
-        compositeSubscription.unsubscribe();
+        // IMPORTANT: there's a distinction between `compositeSubscription.clear()` and `compositeSubscription.unsubscribe()`
+        // both clear() and unsubscribe() will unsubscribe and remove all the child subscriptions. However, calling
+        // unsubscribe will cause compositeSubscription to unsubscribe itself, which means any additional child
+        // subscription added will start off and remain in unsubscribed state, which means they won't be executed
+        // Calling clear() will still allow compositeSubscription to accept additional child subscriptions normally.
+        compositeSubscription.clear();
     }
 
     @OnClick(R.id.add_subscription_button)
@@ -82,7 +76,7 @@ public class MultipleSubscriptionsActivity extends AppCompatActivity {
         final TextView rowValueText = (TextView) row.findViewById(R.id.row_value);
         // The code inside TIMER_OBSERVABLE's call gets executed every time something subscribes to it. So each
         // subscriber will have it's own timer.
-        // This is the default behavior obervables, also known as "Cold observables"
+        // This is the default behavior observables, also known as "Cold observables"
         Subscription subscription = TIMER_OBSERVABLE
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
